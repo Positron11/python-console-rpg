@@ -121,7 +121,7 @@ class Player():
 				self.coordinates = new_coordinates
 				self._controller.status_line = f"You're in the {map.current_room(self)}"
 			else: 
-				self._controller.error_message = "<Can't go through walls!> "
+				self._controller.error_message = "Can't go through walls!"
 
 
 # game class
