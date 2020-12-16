@@ -84,7 +84,7 @@ class Controller():
 # player class
 class Player():
 
-	def __init__(self, controller, sprite="@", coordinates=[1,1]):
+	def __init__(self, controller, sprite="X", coordinates=[1,1]):
 		self.sprite = sprite
 		self.coordinates = coordinates
 		self._controller = controller
