@@ -58,10 +58,14 @@ class Controller():
 	def moves(self):
 		return self._moves
 
+	# construct colored prompts
+	def colored_prompt(self, prompt, error):
+		return f"\n{colorify(self.error_message, 'red', 'bold')}[{prompt}] >> "
+
 	# set sprite
 	def set_sprite(self):
 		try:
-			sprite = get_input(f"\n{self.error_message}[choose sprite] >> ", ["#", "."], invert=True)
+			sprite = get_input(self.colored_prompt("choose sprite", self.error_message), ["#", "."], invert=True)
 			self.error_message = str()
 			return sprite
 		except InvalidInputError:
@@ -72,7 +76,7 @@ class Controller():
 	# get user input for move
 	def get_move(self):
 		try:
-			move = get_input(f"\n{self.error_message}[move] >> ", self._moves.keys())
+			move = get_input(self.colored_prompt("move", self.error_message), self._moves.keys())
 			self.error_message = str()
 			return move
 		except InvalidInputError:
