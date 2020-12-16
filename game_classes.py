@@ -65,17 +65,19 @@ class Controller():
 	# take input and handle common error messages
 	def errored_input(self, **kwargs):
 		try:
-			value = get_input(kwargs.get("prompt"), kwargs.get("valid"), kwargs.get("invert", False))
+			value = get_input(kwargs.get("prompt"), kwargs.get("valid"), kwargs.get("max_length", 250), kwargs.get("invert", False))
 			self.error_message = str()
 			return value
 		except InvalidInputError:
 			self.error_message = f"<Invalid {kwargs.get('object')}!> "
+		except ExceededMaxLengthError:
+			self.error_message = f"<Too long! Max length: {kwargs.get('max_length')} characters> "
 		except BlankInputError:
 			self.error_message= "<Empty input!> "
 
 	# set sprite
 	def set_sprite(self):
-		return self.errored_input(prompt=self.colored_prompt("choose sprite", self.error_message), valid=["#", "."], invert=True, object="sprite")
+		return self.errored_input(prompt=self.colored_prompt("choose sprite", self.error_message), valid=["#", "."], max_length=1, invert=True, object="sprite")
 
 	# get user input for move
 	def get_move(self):

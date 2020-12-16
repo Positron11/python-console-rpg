@@ -24,7 +24,7 @@ def clear():
 
 
 # get input function
-def get_input(prompt, valid, invert=False):
+def get_input(prompt, valid, max_length=250, invert=False):
 	# get input
 	user_input = input(prompt)
 
@@ -33,6 +33,8 @@ def get_input(prompt, valid, invert=False):
 		# either return input or exception
 		if (user_input not in valid) is not invert:
 			raise InvalidInputError()
+		elif len(user_input) > max_length:
+			raise ExceededMaxLengthError()
 		else:
 			return user_input
 	else:
