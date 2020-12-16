@@ -30,11 +30,13 @@ def get_input(prompt, valid, max_length=250, invert=False):
 
 	# if any input at all
 	if user_input:
-		# either return input or exception
+		# if invalid...
 		if (user_input not in valid) is not invert:
 			raise InvalidInputError()
+		# if too long...
 		elif len(user_input) > max_length:
 			raise ExceededMaxLengthError()
+		# if alright...
 		else:
 			return user_input
 	else:

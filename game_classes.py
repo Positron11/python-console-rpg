@@ -9,16 +9,20 @@ class Map():
 		self._width = max([room["coordinates"][1][0] for room in rooms.values()])
 		self._height = max([room["coordinates"][1][1] for room in rooms.values()])
 		self._openings = [opening for room in rooms.values() for opening in room["openings"]]
+		self._room_coordinates = dict()
 		self._walls = list()
 
-		# calculate walls
+		# calculate walls and room coordinates
 		for room in rooms.values():
 			x1 = room["coordinates"][0][0]
 			y1 = room["coordinates"][0][1]
 			x2 = room["coordinates"][1][0]
 			y2 = room["coordinates"][1][1]
+			self._room_coordinates.update({room["name"]: list()})
+
 			for x in range(x1, x2 + 1):
 				for y in range(y1, y2 + 1):
+					self._room_coordinates[room["name"]].append([x,y])
 					if (y in [y1,y2] or x in [x1,x2]) and [x,y] not in self._openings:
 						self._walls.append([x,y])
 
@@ -26,6 +30,12 @@ class Map():
 	@property
 	def walls(self):
 		return self._walls
+
+	# get room user is currently in
+	def current_room(self, player):
+		for room, coordinates in self._room_coordinates.items():
+			if player.coordinates in coordinates:
+				return room
 
 	# draw map
 	def draw(self, player):
@@ -52,6 +62,7 @@ class Controller():
 
 	def __init__(self):
 		self.error_message = str()
+		self.status_line = "Start game..."
 
 	# moves getter
 	@property
@@ -60,7 +71,7 @@ class Controller():
 
 	# construct colored prompts
 	def colored_prompt(self, prompt, error):
-		return f"\n{colorify(self.error_message, 'red', 'bold')}[{prompt}] >> "
+		return f"\n{colorify(f'<{self.error_message}>', 'red', 'bold') if self.error_message else colorify(f'({self.status_line})', 'green', 'bold')} [{prompt}] >> "
 
 	# take input and handle common error messages
 	def errored_input(self, **kwargs):
@@ -69,11 +80,11 @@ class Controller():
 			self.error_message = str()
 			return value
 		except InvalidInputError:
-			self.error_message = f"<Invalid {kwargs.get('object')}!> "
+			self.error_message = f"Invalid {kwargs.get('object')}!"
 		except ExceededMaxLengthError:
-			self.error_message = f"<Too long! Max length: {kwargs.get('max_length')} characters> "
+			self.error_message = f"Too long! Max length: {kwargs.get('max_length')} characters"
 		except BlankInputError:
-			self.error_message= "<Empty input!> "
+			self.error_message= "Empty input!"
 
 	# set sprite
 	def set_sprite(self):
@@ -97,7 +108,7 @@ class Player():
 		self.sprite = self._controller.set_sprite()
 
 	# change player coordinates
-	def move(self, walls):
+	def move(self, map):
 		move = self._controller.get_move()
 
 		if move:
@@ -106,8 +117,9 @@ class Player():
 			new_coordinates[self._controller.moves[move][0]] += self._controller.moves[move][1]
 
 			# apply changes if not walking through walls
-			if new_coordinates not in walls:
+			if new_coordinates not in map.walls:
 				self.coordinates = new_coordinates
+				self._controller.status_line = f"You're in the {map.current_room(self)}"
 			else: 
 				self._controller.error_message = "<Can't go through walls!> "
 
@@ -138,4 +150,4 @@ class Game():
 		while True:
 			clear()
 			self.map.draw(self.player)
-			self.player.move(self.map.walls)
+			self.player.move(self.map)
