@@ -57,6 +57,17 @@ class Controller():
 	@property
 	def moves(self):
 		return self._moves
+
+	# set sprite
+	def set_sprite(self):
+		try:
+			sprite = get_input(f"\n{self.error_message}[choose sprite] >> ", ["#", "."], invert=True)
+			self.error_message = str()
+			return sprite
+		except InvalidInputError:
+			self.error_message = "<Invalid sprite!> "
+		except BlankInputError:
+			self.error_message= "<Empty input!> "
 		
 	# get user input for move
 	def get_move(self):
@@ -73,10 +84,14 @@ class Controller():
 # player class
 class Player():
 
-	def __init__(self, name, controller, coordinates=[1,1]):
-		self.name = name
+	def __init__(self, controller, sprite="@", coordinates=[1,1]):
+		self.sprite = sprite
 		self.coordinates = coordinates
 		self._controller = controller
+
+	# set player sprite
+	def change_sprite(self):
+		self.sprite = self._controller.set_sprite()
 
 	# change player coordinates
 	def move(self, walls):
@@ -104,17 +119,17 @@ class Game():
 	# play game
 	def play(self):
 		# title screen
-		for i in range(5):
+		while True:
 			clear()
-
 			print("WELCOME TO THE GAME")
 			print("===================")
 			print("\nObjective: navigate")
 			print("\nMovement: a,s,d,w")
-			print(f"\nStarting in {5 - i}...")
-			print("\nBy Aarush Kumbhakern")
-			
-			time.sleep(1)
+
+			# choose sprite
+			self.player.change_sprite()
+			if not self.player._controller.error_message:
+				break
 
 		# start game
 		while True:

@@ -15,7 +15,7 @@ rooms = {
 # create entities
 map = Map(rooms)
 controller = Controller()
-player = Player("Langston", controller)
+player = Player(controller)
 game = Game(map, player)
 
 # play game

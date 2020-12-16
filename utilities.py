@@ -13,14 +13,14 @@ def clear():
 
 
 # get input function
-def get_input(prompt, valid):
+def get_input(prompt, valid, invert=False):
 	# get input
 	user_input = input(prompt)
 
 	# if any input at all
 	if user_input:
 		# either return input or exception
-		if user_input not in valid:
+		if (user_input not in valid) is not invert:
 			raise InvalidInputError()
 		else:
 			return user_input
