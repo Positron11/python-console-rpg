@@ -62,27 +62,24 @@ class Controller():
 	def colored_prompt(self, prompt, error):
 		return f"\n{colorify(self.error_message, 'red', 'bold')}[{prompt}] >> "
 
+	# take input and handle common error messages
+	def errored_input(self, **kwargs):
+		try:
+			value = get_input(kwargs.get("prompt"), kwargs.get("valid"), kwargs.get("invert", False))
+			self.error_message = str()
+			return value
+		except InvalidInputError:
+			self.error_message = f"<Invalid {kwargs.get('object')}!> "
+		except BlankInputError:
+			self.error_message= "<Empty input!> "
+
 	# set sprite
 	def set_sprite(self):
-		try:
-			sprite = get_input(self.colored_prompt("choose sprite", self.error_message), ["#", "."], invert=True)
-			self.error_message = str()
-			return sprite
-		except InvalidInputError:
-			self.error_message = "<Invalid sprite!> "
-		except BlankInputError:
-			self.error_message= "<Empty input!> "
-		
+		return self.errored_input(prompt=self.colored_prompt("choose sprite", self.error_message), valid=["#", "."], invert=True, object="sprite")
+
 	# get user input for move
 	def get_move(self):
-		try:
-			move = get_input(self.colored_prompt("move", self.error_message), self._moves.keys())
-			self.error_message = str()
-			return move
-		except InvalidInputError:
-			self.error_message = "<Invalid move!> "
-		except BlankInputError:
-			self.error_message= "<Empty input!> "
+		return self.errored_input(prompt=self.colored_prompt("move", self.error_message), valid=self._moves.keys(), object="move")
 
 
 # player class
