@@ -5,3 +5,7 @@ class InvalidInputError(Exception):
 # custom exception for blank input
 class BlankInputError(Exception):
 	pass
+
+# custom exception for exceeding max length
+class ExceededMaxLengthError(Exception):
+	pass
