@@ -1,5 +1,16 @@
 from os import system, name 
 from custom_exceptions import *
+
+# colors
+colors = {
+	"endc": "\033[0m",
+	"bold": "\033[1m",
+	"red": "\033[0;31m",
+	"blue": "\033[0;34m",
+	"grey": "\033[0;37m",
+	"green": "\033[0;32m"
+}
+
   
 # clear function 
 def clear(): 
@@ -26,3 +37,8 @@ def get_input(prompt, valid, invert=False):
 			return user_input
 	else:
 		raise BlankInputError()
+
+
+# color fuction
+def colorify(string, color, style=None):
+	return f"{colors[color]}{colors[style] if style else ''}{string}{colors['endc']}"

@@ -32,11 +32,11 @@ class Map():
 		for y in reversed(range(self._height + 1)):
 			for x in range(self._width + 1):
 				if [x,y] == player.coordinates:
-					print("@", end=" ")
+					print(f"{colorify(player.sprite, 'red', 'bold')}", end=" ")
 				elif [x,y] in self._walls:
-					print("#", end=" ")
+					print(f"{colorify('#', 'grey')}", end=" ")
 				else:
-					print(".", end=" ")
+					print(f"{colorify('.', 'green', 'bold')}", end=" ")
 			print()
 
 
